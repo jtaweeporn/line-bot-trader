@@ -1,9 +1,10 @@
 const express = require('express');
 const { Client, middleware } = require('@line/bot-sdk');
 
+// 👇 เปลี่ยนจากเขียน token ตรงๆ มาใช้ process.env
 const config = {
-  channelAccessToken: 'qvbZbsU24w2ENTihi+immN9Nr8bA2fPGmlzdzk0+EuZUl2BUCV3d+3DbdNT0+y1zoXGwbrT7+xV0VQz+WR8+D4gioOLUmNp1f4QPszz6USC2DNicP1sMOm5HaR5CwN7lWTLTsto/zjsxRvZh+bSSrwdB04t89/1O/w1cDnyilFU=',
-  channelSecret: 'd7f3e33dbaac6b35a26bdbd1fa28fa98',
+  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
+  channelSecret: process.env.CHANNEL_SECRET,
 };
 
 const app = express();
@@ -29,7 +30,7 @@ function handleEvent(event) {
 
 const port = process.env.PORT || 3000;
 app.get("/webhook", (req, res) => {
-  res.status(200).send("Webhook alive - UptimeRobot OK ✅");
+  res.status(200).send("Webhook alive - Render OK ✅");
 });
 
 app.listen(port, () => {
