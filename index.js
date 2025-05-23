@@ -30,7 +30,7 @@ function handleEvent(event) {
 
 const port = process.env.PORT || 3000;
 app.get("/webhook", (req, res) => {
-  res.status(200).send("Webhook alive - Render OK ✅");
+  res.status(200).send("Webhook alive - เรนเดอร์ OK ✅");
 });
 
 app.listen(port, () => {
