@@ -24,7 +24,7 @@ function handleEvent(event) {
 
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: '✅ 22222222บอทพร้อมทำงานแล้วครับ!',
+    text: '✅ บอทพร้อมทำงานแล้วครับ!',
   });
 }
 
