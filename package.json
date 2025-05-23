@@ -12,6 +12,7 @@
   "dependencies": {
     "@line/bot-sdk": "^9.9.0",
     "@types/node": "^22.13.11",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "dotenv": "^16.3.1"
   }
 }
