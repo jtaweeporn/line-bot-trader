@@ -1,8 +1,8 @@
 const express = require('express');
 const { Client, middleware } = require('@line/bot-sdk');
-const { pushMessage } = require('./utils/line'); // ✅ ดึงฟังก์ชัน pushMessage เข้ามา
 
-// 👇 ใช้ค่า ENV
+require('dotenv').config(); // ✅ โหลดไฟล์ .env
+
 const config = {
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
   channelSecret: process.env.CHANNEL_SECRET,
@@ -11,29 +11,32 @@ const config = {
 const app = express();
 const client = new Client(config);
 
-// ✅ ทดสอบส่งข้อความ LINE (ใส่ userId ของคุณแทน <USER_ID>)
-pushMessage('<U378e0720792b4f1e8f94738343a37864>', '🚀 ทดสอบส่งข้อความจาก index.js สำเร็จแล้วครับ!');
-
-app.use(express.json());
-
+// ✅ ตรวจว่า Webhook ทำงาน และจับ error
 app.post('/webhook', middleware(config), (req, res) => {
+  console.log('📥 Webhook received:', JSON.stringify(req.body, null, 2)); // ดู event ที่เข้ามา
   Promise
     .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result));
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error('❌ Webhook handler error:', err); // log error
+      res.status(500).end(); // แจ้งว่า error ให้ LINE รู้
+    });
 });
 
+// ✅ handleEvent = ตอบกลับข้อความ
 function handleEvent(event) {
   if (event.type !== 'message' || event.message.type !== 'text') {
-    return Promise.resolve(null);
+    return Promise.resolve(null); // ไม่ใช่ข้อความ → ไม่ตอบ
   }
 
-  const userId = event.source.userId;
+  // ✅ ตอบกลับข้อความ
   return client.replyMessage(event.replyToken, {
     type: 'text',
-    text: `✅ บอทพร้อมทำงานแล้วครับ!\n👤 userId ของคุณคือ: ${userId}`,
+    text: '✅ บอทพร้อมทำงานแล้วครับ!',
   });
 }
 
+// ✅ Endpoint สำหรับเช็กว่าเซิร์ฟเวอร์ยังทำงาน
 const port = process.env.PORT || 3000;
 app.get("/webhook", (req, res) => {
   res.status(200).send("Webhook alive - Render OK ✅");
