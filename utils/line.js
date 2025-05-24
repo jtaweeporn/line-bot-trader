@@ -1,33 +1,32 @@
 const axios = require('axios');
-require('dotenv').config(); // โหลด .env ถ้ายังไม่ทำไว้
 
-const LINE_API = 'https://api.line.me/v2/bot/message/push';
-const TOKEN = process.env.LINE_ACCESS_TOKEN;
+// Access Token ของ LINE Bot (ใช้ของคุณเอง)
+const LINE_ACCESS_TOKEN = process.env.LINE_CHANNEL_ACCESS_TOKEN;
 
-/**
- * ส่งข้อความไปยัง LINE User ID
- * @param {string} userId LINE User ID ของผู้รับ
- * @param {string} message ข้อความที่จะส่ง
- */
-async function pushMessage(userId, message) {
+// ฟังก์ชันส่งข้อความไปยัง LINE
+async function sendLineNotify(message) {
   try {
     await axios.post(
-      LINE_API,
+      'https://api.line.me/v2/bot/message/broadcast',
       {
-        to: userId,
-        messages: [{ type: 'text', text: message }]
+        messages: [
+          {
+            type: 'text',
+            text: message,
+          },
+        ],
       },
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${TOKEN}`
-        }
+          Authorization: `Bearer ${LINE_ACCESS_TOKEN}`,
+        },
       }
     );
-    console.log('✅ ส่งข้อความ LINE สำเร็จ:', message);
+    console.log('[LINE] ส่งข้อความเรียบร้อย:', message);
   } catch (error) {
-    console.error('❌ ส่งข้อความ LINE ล้มเหลว:', error.message);
+    console.error('[LINE] ส่งข้อความล้มเหลว:', error.response?.data || error.message);
   }
 }
 
-module.exports = { pushMessage };
+module.exports = { sendLineNotify };
